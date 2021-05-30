@@ -55,7 +55,14 @@
     <button>Trigger a Global Error</button>
   </section>
 
-  <script>
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+
+<script>
+    window.TrackJS && TrackJS.install({ 
+      token: "fc6dd29c0c2a4912b4598d052ec805be"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+    
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
       let output = document.querySelector('output');
@@ -66,7 +73,124 @@
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
-    // TODO - Make buttons functional
+
+    
+    class BadError extends Error {
+      
+      constructor(message) {
+
+        super(message);
+        this.name = "BadError"; 
+      }
+    }
+
+
+    errorBtns[0].addEventListener('click', function() {
+      console.log('This is a console.log message.');
+    });
+
+    errorBtns[1].addEventListener('click', function() {
+      console.error('This is a console.error message.');
+    });
+
+    errorBtns[2].addEventListener('click', function() {
+      console.dir(errorBtns[2]);
+    });
+
+    errorBtns[3].addEventListener('click', function() {
+      console.dirxml(document.querySelector('#error-btns'));
+    });
+
+    errorBtns[4].addEventListener('click', function() {
+      console.group('A group of console outputs');
+    });
+
+    errorBtns[5].addEventListener('click', function() {
+      console.groupEnd('A group of console outputs');
+    });
+
+    errorBtns[6].addEventListener('click', function() {
+      console.table([
+        {
+          college: 'Revelle',
+          knownFor: 'GEs but lots of them',
+        },
+        {
+          college: 'Muir',
+          knownFor: 'just being the best one to be in, simple as',
+        },
+        {
+          college: 'Marshall',
+          knownFor: 'DEI before DEI was even a requirement',
+        },
+        {
+          college: 'Warren',
+          knownFor: 'engineering majors and sadness',
+        },
+        {
+          college: 'ERC',
+          knownFor: 'GEs but lots of them again',
+        },
+        {
+          college: 'Sixth',
+          knownFor: 'urban fauna and construction',
+        },
+        {
+          college: 'Seventh',
+          knownFor: 'we have a seventh college? neato, I guess',
+        }
+      ]);
+    });
+
+    errorBtns[7].addEventListener('click', function() {
+      console.log('Started a timer.');
+      console.time('This is a timer.');
+    });
+
+    errorBtns[8].addEventListener('click', function() {
+      console.timeEnd('This is a timer.');
+    });
+
+    function func1() {
+      func2();
+    }
+
+    function func2() {
+      func3();
+    }
+
+    function func3() {
+      console.trace();
+    }
+
+    errorBtns[9].addEventListener('click', function() {
+      func1();
+    });
+
+    window.onerror = function(message, source, lineno, colno, error) {
+      alert('Ben goofed the code again, he\'s been sent a messenger pigeon telling him to deal with it');
+      TrackJS.track('You\'ve messed it up again, you doughnut. The error is as follows: ' + message + ' ' + source + ' ' + lineno + ' ' + colno + ' ' + error);
+    };
+
+    errorBtns[10].addEventListener('click', function() {
+
+      //I should use a .toString() here
+      let list = errorBtns[0].classList.substring(0, 5);
+      console.log(list);
+    });
+
+    try {
+      
+      if (func1() == null) {
+        throw(new BadError('you goofed, it was null'));
+      }
+      
+    } catch (err) {
+      console.log('this should trigger, it was ' + err);
+    } finally {
+      console.log('this runs');
+    }
+
   </script>
 </body>
 </html>
